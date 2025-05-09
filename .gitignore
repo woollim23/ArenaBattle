@@ -1,3 +1,10 @@
+# woollim ignore
+ArenaBattle/Binaries/
+ArenaBattle/Content/
+ArenaBattle/Intermediate
+ArenaBattle/Saved
+ArenaBattle/DerivedDataCache
+
 # Visual Studio 2015 user specific files
 .vs/
 
