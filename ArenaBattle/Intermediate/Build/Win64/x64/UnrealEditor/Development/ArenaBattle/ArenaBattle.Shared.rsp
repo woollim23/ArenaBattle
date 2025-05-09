@@ -1,5 +1,8 @@
 /I "."
+/I "C:\Git\ArenaBattle\ArenaBattle\Source\ArenaBattle\Private"
+/I "C:\Git\ArenaBattle\ArenaBattle\Intermediate\Build\Win64\UnrealEditor\Inc\ArenaBattle\UHT"
 /I "C:\Git\ArenaBattle\ArenaBattle\Source"
+/I "C:\Git\ArenaBattle\ArenaBattle\Source\ArenaBattle\Public"
 /I "Runtime\Core\Public"
 /I "Runtime\Core\Internal"
 /I "Runtime\TraceLog\Public"
