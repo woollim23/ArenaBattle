@@ -23,7 +23,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Body;
+
+	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Water;
 
+	UPROPERTY(VisibleAnywhere)
+	UPointLightComponent* Light;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* Splash;
+
+	UPROPERTY(VisibleAnywhere)
+	int32 ID; // ±âº»°ª 0
 };
