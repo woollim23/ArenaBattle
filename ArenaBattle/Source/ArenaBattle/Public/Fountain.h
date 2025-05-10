@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ArenaBattle.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "GameFramework/Actor.h"
 #include "Fountain.generated.h"
 
@@ -37,10 +38,13 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* Splash;
 
+	UPROPERTY(VisibleAnywhere)
+	URotatingMovementComponent* Movement;
+
 	UPROPERTY(EditAnywhere, Category = "ID") // 데이터도 변경 가능
 	int32 ID; // UPROPERTY 매크로 사용시 기본값 0
 
 private:
 	UPROPERTY(EditAnywhere, Category=Stat, Meta = (AllowPrivateAccess = true))
-	float RocateSpeed;
+	float RotateSpeed;
 };
