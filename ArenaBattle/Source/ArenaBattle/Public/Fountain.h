@@ -23,7 +23,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere) // 디테일에서 객체를 볼 수 있게 함. 객체의 속성 편집가능. 단, 타 객체로 변경 불가능(데이터 변경 불가)
 	UStaticMeshComponent* Body;
 
 	UPROPERTY(VisibleAnywhere)
@@ -35,6 +35,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* Splash;
 
-	UPROPERTY(VisibleAnywhere)
-	int32 ID; // 기본값 0
+	UPROPERTY(EditAnywhere, Category = "ID") // 데이터도 변경 가능
+	int32 ID; // UPROPERTY 매크로 사용시 기본값 0
+
 };
