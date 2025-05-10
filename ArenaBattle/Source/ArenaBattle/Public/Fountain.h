@@ -18,6 +18,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostInitializeComponents() override;
 
 public:	
 	// Called every frame
@@ -38,4 +40,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "ID") // 데이터도 변경 가능
 	int32 ID; // UPROPERTY 매크로 사용시 기본값 0
 
+private:
+	UPROPERTY(EditAnywhere, Category=Stat, Meta = (AllowPrivateAccess = true))
+	float RocateSpeed;
 };
