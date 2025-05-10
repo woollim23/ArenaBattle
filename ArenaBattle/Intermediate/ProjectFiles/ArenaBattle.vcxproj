@@ -266,13 +266,13 @@
     <None Include="..\..\Config\DefaultGame.ini"/>
     <None Include="..\..\Config\DefaultInput.ini"/>
     <None Include="..\..\Source\ArenaBattle\ArenaBattle.Build.cs"/>
-    <ClCompile Include="..\..\Source\ArenaBattle\ArenaBattle.cpp">
+    <ClCompile Include="..\..\Source\ArenaBattle\Private\ArenaBattle.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <ClInclude Include="..\..\Source\ArenaBattle\ArenaBattle.h"/>
     <ClCompile Include="..\..\Source\ArenaBattle\Private\Fountain.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClInclude Include="..\..\Source\ArenaBattle\Public\ArenaBattle.h"/>
     <ClInclude Include="..\..\Source\ArenaBattle\Public\Fountain.h"/>
   </ItemGroup>
   <PropertyGroup>
