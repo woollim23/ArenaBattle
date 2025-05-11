@@ -13,7 +13,7 @@ AABGameMode::AABGameMode()
 
 void AABGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	ABLOG(Warning, TEXT("PostLogin Begin")); // 빙의 시작
+	ABLOG(Warning, TEXT("PostLogin Begin")); // 로그인 시작
 	Super::PostLogin(NewPlayer);
-	ABLOG(Warning, TEXT("PostLogin End")); // 빙의 끝
+	ABLOG(Warning, TEXT("PostLogin End")); // 로그인 끝
 }
