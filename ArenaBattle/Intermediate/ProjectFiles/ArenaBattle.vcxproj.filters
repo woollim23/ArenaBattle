@@ -36,6 +36,9 @@
     <Filter Include="Source\ArenaBattle\Private">
       <UniqueIdentifier>{9F56DE06-3E1C-3D6C-BB28-A458E014E770}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\ArenaBattle\Private\ABCharacter.cpp">
+      <Filter>Source\ArenaBattle\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\ArenaBattle\Private\ABGameMode.cpp">
       <Filter>Source\ArenaBattle\Private</Filter>
     </ClCompile>
@@ -54,6 +57,9 @@
     <Filter Include="Source\ArenaBattle\Public">
       <UniqueIdentifier>{92EEDC96-0E5B-38F8-9EB8-2FE6E75CD359}</UniqueIdentifier>
     </Filter>
+    <ClInclude Include="..\..\Source\ArenaBattle\Public\ABCharacter.h">
+      <Filter>Source\ArenaBattle\Public</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\ArenaBattle\Public\ABGameMode.h">
       <Filter>Source\ArenaBattle\Public</Filter>
     </ClInclude>
