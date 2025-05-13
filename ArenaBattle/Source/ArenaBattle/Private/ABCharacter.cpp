@@ -66,4 +66,3 @@ void AABCharacter::LeftRight(float NewAxisValue)
 {
 	AddMovementInput(GetActorRightVector(), NewAxisValue);
 }
-

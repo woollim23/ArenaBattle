@@ -91,4 +91,3 @@ void AABPawn::LeftRight(float NewAxisValue)
 {
 	AddMovementInput(GetActorRightVector(), NewAxisValue);
 }
-
