@@ -55,6 +55,8 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AABCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AABCharacter::LeftRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AABCharacter::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AABCharacter::Turn);
 }
 
 void AABCharacter::UpDown(float NewAxisValue)
@@ -65,4 +67,14 @@ void AABCharacter::UpDown(float NewAxisValue)
 void AABCharacter::LeftRight(float NewAxisValue)
 {
 	AddMovementInput(GetActorRightVector(), NewAxisValue);
+}
+
+void AABCharacter::LookUp(float NewAxisValue)
+{
+	AddControllerPitchInput(NewAxisValue);
+}
+
+void AABCharacter::Turn(float NewAxisValue)
+{
+	AddControllerPitchInput(NewAxisValue);
 }
