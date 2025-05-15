@@ -32,6 +32,13 @@ AABCharacter::AABCharacter()
 	{
 		GetMesh()->SetAnimInstanceClass(WARRIOR_ANIM.Class);
 	}
+
+	//SpringArm->bUsePawnControlRotation = true;
+	//Camera->bUsePawnControlRotation = false; // SpringArm이 회전 처리함
+	//bUseControllerRotationPitch = false;
+	//bUseControllerRotationYaw = true;
+	//bUseControllerRotationRoll = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -76,5 +83,5 @@ void AABCharacter::LookUp(float NewAxisValue)
 
 void AABCharacter::Turn(float NewAxisValue)
 {
-	AddControllerPitchInput(NewAxisValue);
+	AddControllerYawInput(NewAxisValue);
 }
