@@ -33,11 +33,11 @@ AABCharacter::AABCharacter()
 		GetMesh()->SetAnimInstanceClass(WARRIOR_ANIM.Class);
 	}
 
-	//SpringArm->bUsePawnControlRotation = true;
-	//Camera->bUsePawnControlRotation = false; // SpringArm이 회전 처리함
-	//bUseControllerRotationPitch = false;
-	//bUseControllerRotationYaw = true;
-	//bUseControllerRotationRoll = false;
+	SpringArm->bUsePawnControlRotation = true;
+	Camera->bUsePawnControlRotation = false; // SpringArm이 회전 처리함
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = false;
 
 }
 
