@@ -13,7 +13,10 @@ AABGameMode::AABGameMode()
 
 void AABGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	ABLOG(Warning, TEXT("PostLogin Begin")); // 로그인 시작
+	ABLOG(Warning, TEXT("PostLogin Begin")); 
+	// 새 플레이어가 게임에 접속했을 때 호출됨
 	Super::PostLogin(NewPlayer);
-	ABLOG(Warning, TEXT("PostLogin End")); // 로그인 끝
+	ABLOG(Warning, TEXT("PostLogin End"));
+	// PostLogin 처리 완료
+	// 멀티플레이 게임에서 플레이어 초기화나 인사 메시지 전송, 팀 배정 등을 수행하기 좋은 위치
 }
