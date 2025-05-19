@@ -36,12 +36,7 @@ AABCharacter::AABCharacter()
 		GetMesh()->SetAnimInstanceClass(WARRIOR_ANIM.Class);
 	}
 
-	//SpringArm->bUsePawnControlRotation = true;
-	//Camera->bUsePawnControlRotation = false; // SpringArm이 회전 처리함
-	//bUseControllerRotationPitch = false;
-	//bUseControllerRotationYaw = true;
-	//bUseControllerRotationRoll = false;
-
+	SetControlMode(0);
 }
 
 // Called when the game starts or when spawned
@@ -49,6 +44,34 @@ void AABCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AABCharacter::SetControlMode(int32 ControlMode)
+{
+	if (ControlMode == 0) // ControlMode가 0일 경우 설정 적용 (GTA 방식)
+	{
+		SpringArm->TargetArmLength = 450.0f;
+		// 카메라와 캐릭터 사이 거리 설정 (3인칭 거리)
+		SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
+		// 스프링암 회전 초기화 (캐릭터 기준 정방향으로 리셋)
+		SpringArm->bUsePawnControlRotation = true;
+		// 컨트롤러 회전값(ControlRotation)을 따라 회전하게 함
+		SpringArm->bInheritPitch = true;
+		// 컨트롤러 Pitch(상하) 회전 따라감
+		SpringArm->bInheritRoll = true;
+		// 컨트롤러 Roll(기울기) 회전 따라감
+		SpringArm->bInheritYaw = true;
+		// 컨트롤러 Yaw(좌우) 회전 따라감
+		SpringArm->bDoCollisionTest = true;
+		// 벽 등 장애물에 카메라가 가려질 경우 카메라 위치 자동 조정
+		bUseControllerRotationYaw = false;
+		// 캐릭터는 컨트롤러 Yaw 회전을 따르지 않음
+		// 즉, 카메라는 회전하지만 캐릭터 본체는 회전하지 않음
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		// 캐릭터가 이동 방향을 바라보도록 자동 회전하게 설정
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+		// 회전 속도를 초당 Yaw 720도로 설정
+	}
 }
 
 // Called every frame
@@ -73,15 +96,20 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AABCharacter::UpDown(float NewAxisValue)
 {
-	AddMovementInput(GetActorForwardVector(), NewAxisValue);
+	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), NewAxisValue);
+	// 카메라(또는 컨트롤러)가 바라보는 전방 방향(X축)으로 NewAxisValue만큼 캐릭터를 이동시켜라
 	// AddMovementInput() : 현재 Pawn 또는 Character에 이동 요청을 보내는 함수
-	// GetActorForwardVector() : 이 액터(캐릭터)가 현재 바라보는 방향의 벡터 (Z축 기준)
+	// GetControlRotation() : PlayerController의 현재 회전값(시점 방향)을 가져옴
+	// FRotationMatrix() : 회전값을 3D 회전 행렬로 변환
+	// GetUnitAxis() : 행렬의 X축 방향 벡터(= 전방 방향)을 가져옴
 	// NewAxisValue : 입력 장치(키보드, 패드 등)에서 전달된 값 (예: +1.0, -1.0 등)
+
+	// GetActorForwardVector() : 이 액터(캐릭터)가 현재 바라보는 방향의 벡터 (Z축 기준)
 }
 
 void AABCharacter::LeftRight(float NewAxisValue)
 {
-	AddMovementInput(GetActorRightVector(), NewAxisValue);
+	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), NewAxisValue);
 }
 
 void AABCharacter::LookUp(float NewAxisValue)
