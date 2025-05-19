@@ -51,9 +51,6 @@
     <ClCompile Include="..\..\Source\ArenaBattle\Private\ArenaBattle.cpp">
       <Filter>Source\ArenaBattle\Private</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ArenaBattle\Private\Fountain.cpp">
-      <Filter>Source\ArenaBattle\Private</Filter>
-    </ClCompile>
     <Filter Include="Source\ArenaBattle\Public">
       <UniqueIdentifier>{92EEDC96-0E5B-38F8-9EB8-2FE6E75CD359}</UniqueIdentifier>
     </Filter>
@@ -70,9 +67,6 @@
       <Filter>Source\ArenaBattle\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\ArenaBattle\Public\ArenaBattle.h">
-      <Filter>Source\ArenaBattle\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ArenaBattle\Public\Fountain.h">
       <Filter>Source\ArenaBattle\Public</Filter>
     </ClInclude>
   </ItemGroup>
