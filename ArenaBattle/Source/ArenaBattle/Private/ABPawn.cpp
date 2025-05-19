@@ -17,12 +17,14 @@ AABPawn::AABPawn()
 
 	RootComponent = Capsule;
 	Mesh->SetupAttachment(Capsule);
+	// SpringArm을 캡슐에 붙여 회전 기준을 설정
 	SpringArm->SetupAttachment(Capsule);
 	Camera->SetupAttachment(Capsule);
 
 	Capsule->SetCapsuleHalfHeight(88.0f);
 	Capsule->SetCapsuleRadius(34.0f);
 	Mesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
+	// 메시 위치를 루트(캡슐) 기준으로 아래쪽으로 이동시켜 실제 캐릭터 형태 맞춤
 	SpringArm->TargetArmLength = 400.0f;
 	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
 
@@ -57,12 +59,14 @@ void AABPawn::Tick(float DeltaTime)
 void AABPawn::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	ABLOG_S(Warning); // 폰 생성 완료
+	ABLOG_S(Warning);
+	// 모든 컴포넌트 초기화(PostInitializeComponents) 완료
 }
 
 void AABPawn::PossessedBy(AController* NewController)
 {
-	ABLOG_S(Warning); // 폰이 컨트롤러에 빙의당함
+	ABLOG_S(Warning);
+	// 폰이 컨트롤러에 빙의당함
 	Super::PossessedBy(NewController);
 }
 
