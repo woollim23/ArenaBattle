@@ -36,7 +36,7 @@ AABCharacter::AABCharacter()
 		GetMesh()->SetAnimInstanceClass(WARRIOR_ANIM.Class);
 	}
 
-	SetControlMode(0);
+	SetControlMode(EControlMode::DIABLO);
 }
 
 // Called when the game starts or when spawned
@@ -46,10 +46,13 @@ void AABCharacter::BeginPlay()
 	
 }
 
-void AABCharacter::SetControlMode(int32 ControlMode)
+void AABCharacter::SetControlMode(EControlMode NewControlMode)
 {
-	if (ControlMode == 0) // ControlMode가 0일 경우 설정 적용 (GTA 방식)
+	CurrentControlMode = NewControlMode;
+
+	switch (CurrentControlMode)
 	{
+	case AABCharacter::EControlMode::GTA:
 		SpringArm->TargetArmLength = 450.0f;
 		// 카메라와 캐릭터 사이 거리 설정 (3인칭 거리)
 		SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
@@ -71,6 +74,19 @@ void AABCharacter::SetControlMode(int32 ControlMode)
 		// 캐릭터가 이동 방향을 바라보도록 자동 회전하게 설정
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 		// 회전 속도를 초당 Yaw 720도로 설정
+		break;
+	case AABCharacter::EControlMode::DIABLO:
+		SpringArm->TargetArmLength = 800.0f;
+		SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+		SpringArm->bUsePawnControlRotation = false;
+		SpringArm->bInheritPitch = false;
+		SpringArm->bInheritRoll = false;
+		SpringArm->bInheritYaw = false;
+		SpringArm->bDoCollisionTest = false;
+		bUseControllerRotationYaw = true;
+		break;
+	default:
+		break;
 	}
 }
 
@@ -79,6 +95,16 @@ void AABCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EControlMode::DIABLO:
+		if (DirectionToMove.SizeSquared() > 0.0f)
+		{
+			GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
+			AddMovementInput(DirectionToMove);
+		}
+		break;
+	}
 }
 
 // Called to bind functionality to input
@@ -96,25 +122,45 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AABCharacter::UpDown(float NewAxisValue)
 {
-	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), NewAxisValue);
-	// 카메라(또는 컨트롤러)가 바라보는 전방 방향(X축)으로 NewAxisValue만큼 캐릭터를 이동시켜라
-	// AddMovementInput() : 현재 Pawn 또는 Character에 이동 요청을 보내는 함수
-	// GetControlRotation() : PlayerController의 현재 회전값(시점 방향)을 가져옴
-	// FRotationMatrix() : 회전값을 3D 회전 행렬로 변환
-	// GetUnitAxis() : 행렬의 X축 방향 벡터(= 전방 방향)을 가져옴
-	// NewAxisValue : 입력 장치(키보드, 패드 등)에서 전달된 값 (예: +1.0, -1.0 등)
-
-	// GetActorForwardVector() : 이 액터(캐릭터)가 현재 바라보는 방향의 벡터 (Z축 기준)
+	switch (CurrentControlMode)
+	{
+	case EControlMode::GTA:
+		AddMovementInput(FRotationMatrix(FRotator(0.0f, GetControlRotation().Yaw, 0.0f)).GetUnitAxis(EAxis::X), NewAxisValue);
+		// 카메라(또는 컨트롤러)가 바라보는 전방 방향(X축)으로 NewAxisValue만큼 캐릭터를 이동시켜라
+		// AddMovementInput() : 현재 Pawn 또는 Character에 이동 요청을 보내는 함수
+		// GetControlRotation() : PlayerController의 현재 회전값(시점 방향)을 가져옴
+		// FRotationMatrix() : 회전값을 3D 회전 행렬로 변환
+		// GetUnitAxis() : 행렬의 X축 방향 벡터(= 전방 방향)을 가져옴
+		// NewAxisValue : 입력 장치(키보드, 패드 등)에서 전달된 값 (예: +1.0, -1.0 등)
+		break;
+	case EControlMode::DIABLO:
+		DirectionToMove.X = NewAxisValue;
+		break;
+	}
 }
 
 void AABCharacter::LeftRight(float NewAxisValue)
 {
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EControlMode::GTA:
+		AddMovementInput(FRotationMatrix(FRotator(0.0f, GetControlRotation().Yaw, 0.0f)).GetUnitAxis(EAxis::Y), NewAxisValue);
+		break;
+	case AABCharacter::EControlMode::DIABLO:
+		DirectionToMove.Y = NewAxisValue;
+		break;
+	}
 	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), NewAxisValue);
 }
 
 void AABCharacter::LookUp(float NewAxisValue)
 {
-	AddControllerPitchInput(NewAxisValue);
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EControlMode::GTA:
+		AddControllerPitchInput(NewAxisValue);
+		break;
+	}
 	// AddControllerPitchInput() : 마우스 상하 움직임에 따라 시점을 위아래로 회전시키는 함수
 	// Pawn 자체는 회전시키지 않음. 단지 PlayerController의 ControlRotation.Pitch만 변경
 	// 캐릭터 머리나 시점이 상하로 바뀌려면 SpringArm 또는 Camera가 이 회전을 따라야 함
@@ -123,7 +169,12 @@ void AABCharacter::LookUp(float NewAxisValue)
 
 void AABCharacter::Turn(float NewAxisValue)
 {
-	AddControllerYawInput(NewAxisValue);
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EControlMode::GTA:
+		AddControllerYawInput(NewAxisValue);
+		break;
+	}
 	// AddControllerYawInput() : 이 함수는 마우스 좌우 이동이나 패드 스틱 입력에 따라 캐릭터 또는 카메라의 좌우 시점 이동을 제어
 	// ControlRotation.Yaw 값 증가
 	// 캐릭터가 bUseControllerRotationYaw = true이면 실제로 몸도 회전
