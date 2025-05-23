@@ -74,6 +74,7 @@ void AABCharacter::SetControlMode(EControlMode NewControlMode)
 		// 캐릭터가 이동 방향을 바라보도록 자동 회전하게 설정
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 		// 회전 속도를 초당 Yaw 720도로 설정
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		break;
 	case AABCharacter::EControlMode::DIABLO:
 		SpringArm->TargetArmLength = 800.0f;
@@ -83,7 +84,10 @@ void AABCharacter::SetControlMode(EControlMode NewControlMode)
 		SpringArm->bInheritRoll = false;
 		SpringArm->bInheritYaw = false;
 		SpringArm->bDoCollisionTest = false;
-		bUseControllerRotationYaw = true;
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		break;
 	default:
 		break;
@@ -112,6 +116,8 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	// 호출 시점 : Pawn 또는 Character가 PlayerController에 의해 “Possess” 되었을 때 자동으로 호출
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction(TEXT("ViewChange"), EInputEvent::IE_Pressed, this, &AABCharacter::ViewChange);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AABCharacter::UpDown);
 	//UpDown이라는 입력 축 이름이 발생할 때마다 AABCharacter의 UpDown 함수를 호출해라
@@ -178,4 +184,19 @@ void AABCharacter::Turn(float NewAxisValue)
 	// AddControllerYawInput() : 이 함수는 마우스 좌우 이동이나 패드 스틱 입력에 따라 캐릭터 또는 카메라의 좌우 시점 이동을 제어
 	// ControlRotation.Yaw 값 증가
 	// 캐릭터가 bUseControllerRotationYaw = true이면 실제로 몸도 회전
+}
+
+void AABCharacter::ViewChange()
+{
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EControlMode::GTA:
+		SetControlMode(EControlMode::DIABLO);
+		break;
+	case AABCharacter::EControlMode::DIABLO:
+		SetControlMode(EControlMode::GTA);
+		break;
+	default:
+		break;
+	}
 }
