@@ -37,6 +37,9 @@ AABCharacter::AABCharacter()
 	}
 
 	SetControlMode(EControlMode::DIABLO);
+
+	ArmLengthSpeed = 3.0f;
+	ArmRotationSpeed = 10.0f;
 }
 
 // Called when the game starts or when spawned
