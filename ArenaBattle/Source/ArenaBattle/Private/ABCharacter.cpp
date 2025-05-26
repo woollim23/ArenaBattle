@@ -56,10 +56,7 @@ void AABCharacter::SetControlMode(EControlMode NewControlMode)
 	switch (CurrentControlMode)
 	{
 	case AABCharacter::EControlMode::GTA:
-		SpringArm->TargetArmLength = 450.0f;
-		// 카메라와 캐릭터 사이 거리 설정 (3인칭 거리)
-		SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
-		// 스프링암 회전 초기화 (캐릭터 기준 정방향으로 리셋)
+		ArmLengthTo = 450.0f;
 		SpringArm->bUsePawnControlRotation = true;
 		// 컨트롤러 회전값(ControlRotation)을 따라 회전하게 함
 		SpringArm->bInheritPitch = true;
@@ -80,8 +77,10 @@ void AABCharacter::SetControlMode(EControlMode NewControlMode)
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		break;
 	case AABCharacter::EControlMode::DIABLO:
-		SpringArm->TargetArmLength = 800.0f;
-		SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+		//SpringArm->TargetArmLength = 800.0f;
+		//SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+		ArmLengthTo = 800.0f;
+		ArmRotationTo = FRotator(-45.0f, 0.0f, 0.0f);
 		SpringArm->bUsePawnControlRotation = false;
 		SpringArm->bInheritPitch = false;
 		SpringArm->bInheritRoll = false;
@@ -101,6 +100,21 @@ void AABCharacter::SetControlMode(EControlMode NewControlMode)
 void AABCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, ArmLengthTo, DeltaTime, ArmLengthSpeed);
+
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EControlMode::DIABLO:
+		FRotator NewRotation = FMath::RInterpTo(
+			SpringArm->GetRelativeRotation(), // 현재 회전값
+			ArmRotationTo,                    // 목표 회전값
+			DeltaTime,                        // 델타 타임
+			ArmRotationSpeed                  // 보간 속도
+		);
+		SpringArm->SetRelativeRotation(NewRotation);
+		break;
+	}
 
 	switch (CurrentControlMode)
 	{
@@ -194,9 +208,11 @@ void AABCharacter::ViewChange()
 	switch (CurrentControlMode)
 	{
 	case AABCharacter::EControlMode::GTA:
+		GetController()->SetControlRotation(GetActorRotation());
 		SetControlMode(EControlMode::DIABLO);
 		break;
 	case AABCharacter::EControlMode::DIABLO:
+		GetController()->SetControlRotation(SpringArm->GetRelativeRotation());
 		SetControlMode(EControlMode::GTA);
 		break;
 	default:
