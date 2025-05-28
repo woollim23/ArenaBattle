@@ -80,16 +80,27 @@ void AABCharacter::SetControlMode(EControlMode NewControlMode)
 		//SpringArm->TargetArmLength = 800.0f;
 		//SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
 		ArmLengthTo = 800.0f;
+		// 카메라와 캐릭터 사이의 목표 거리 설정 (800단위만큼 떨어진 거리)
 		ArmRotationTo = FRotator(-45.0f, 0.0f, 0.0f);
+		// 카메라가 위에서 아래로 45도 내려다보는 회전값 설정 (디아블로 스타일 뷰)
 		SpringArm->bUsePawnControlRotation = false;
+		// 카메라(SpringArm)가 캐릭터의 회전을 따라가지 않도록 설정
 		SpringArm->bInheritPitch = false;
+		// 캐릭터의 Pitch(상하 회전)를 카메라가 상속하지 않음
 		SpringArm->bInheritRoll = false;
+		// 캐릭터의 Roll(좌우 기울기)을 카메라가 상속하지 않음
 		SpringArm->bInheritYaw = false;
+		// 캐릭터의 Yaw(좌우 회전)를 카메라가 상속하지 않음
 		SpringArm->bDoCollisionTest = false;
+		// 카메라가 벽이나 장애물에 닿을 경우 자동으로 거리를 줄이지 않도록 설정 (충돌 감지 비활성화)
 		bUseControllerRotationYaw = false;
+		// 캐릭터가 컨트롤러의 Yaw 회전값을 직접 사용하지 않도록 설정 (카메라 회전과 분리)
 		GetCharacterMovement()->bOrientRotationToMovement = false;
+		// 캐릭터가 이동 방향을 바라보도록 자동 회전하지 않음 (수동 회전 제어를 위함)
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+		// 캐릭터 회전 속도 설정 (Yaw 회전 속도: 초당 720도)
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		// 컨트롤러에서 설정한 회전 방향을 캐릭터가 따르도록 설정
 		break;
 	default:
 		break;
@@ -101,28 +112,38 @@ void AABCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, ArmLengthTo, DeltaTime, ArmLengthSpeed);
 
+	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, ArmLengthTo, DeltaTime, ArmLengthSpeed);
+	// 카메라와 캐릭터 사이 거리(TargetArmLength)를 부드럽게 목표 거리(ArmLengthTo)로 보간
+
+	// 현재 컨트롤 모드에 따라 동작 분기
 	switch (CurrentControlMode)
 	{
-	case AABCharacter::EControlMode::DIABLO:
+	case AABCharacter::EControlMode::DIABLO:// DIABLO 모드일 경우
+		// SpringArm의 현재 회전을 목표 회전(ArmRotationTo)으로 부드럽게 회전
 		FRotator NewRotation = FMath::RInterpTo(
-			SpringArm->GetRelativeRotation(), // 현재 회전값
+			SpringArm->GetRelativeRotation(), // 현재 SpringArm 회전값
 			ArmRotationTo,                    // 목표 회전값
-			DeltaTime,                        // 델타 타임
-			ArmRotationSpeed                  // 보간 속도
+			DeltaTime,                        // 프레임 시간
+			ArmRotationSpeed                  // 회전 보간 속도
 		);
 		SpringArm->SetRelativeRotation(NewRotation);
 		break;
 	}
 
+	// 다시 컨트롤 모드에 따라 이동 처리
 	switch (CurrentControlMode)
 	{
-	case AABCharacter::EControlMode::DIABLO:
+	case AABCharacter::EControlMode::DIABLO: // DIABLO 모드일 경우
+		// 이동할 방향 벡터의 크기가 0보다 크면 (즉, 이동 중이면)
 		if (DirectionToMove.SizeSquared() > 0.0f)
 		{
-			GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
+			// 캐릭터 컨트롤러의 회전을 이동 방향으로 설정
+			GetController()->SetControlRotation(
+				FRotationMatrix::MakeFromX(DirectionToMove).Rotator()
+			);
 			AddMovementInput(DirectionToMove);
+			// 캐릭터를 해당 방향으로 이동
 		}
 		break;
 	}
