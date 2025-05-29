@@ -226,17 +226,28 @@ void AABCharacter::Turn(float NewAxisValue)
 
 void AABCharacter::ViewChange()
 {
+	// 현재 캐릭터의 컨트롤 모드에 따라 모드를 전환하는 스위치문
 	switch (CurrentControlMode)
 	{
+		// 현재 모드가 GTA 모드인 경우
 	case AABCharacter::EControlMode::GTA:
+		// 컨트롤러의 회전을 캐릭터의 현재 방향으로 설정
 		GetController()->SetControlRotation(GetActorRotation());
+		// DIABLO 모드로 전환
 		SetControlMode(EControlMode::DIABLO);
 		break;
+
+		// 현재 모드가 DIABLO 모드인 경우
 	case AABCharacter::EControlMode::DIABLO:
+		// 컨트롤러의 회전을 스프링암(카메라)의 상대적인 회전값으로 설정
 		GetController()->SetControlRotation(SpringArm->GetRelativeRotation());
+		// GTA 모드로 전환
 		SetControlMode(EControlMode::GTA);
 		break;
+
+		// 정의되지 않은 경우에는 아무 동작도 하지 않음
 	default:
 		break;
 	}
+
 }
