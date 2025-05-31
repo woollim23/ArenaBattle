@@ -194,7 +194,6 @@ void AABCharacter::LeftRight(float NewAxisValue)
 		DirectionToMove.Y = NewAxisValue;
 		break;
 	}
-	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), NewAxisValue);
 }
 
 void AABCharacter::LookUp(float NewAxisValue)
